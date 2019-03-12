@@ -1,6 +1,8 @@
 # Configure Rails Environment
 require "codeclimate-test-reporter"
-CodeClimate::TestReporter.start
+require 'simplecov'
+
+SimpleCov.start
 
 Bundler.setup
 
@@ -18,7 +20,7 @@ when '4.0'
 when '4.1'
   ENV['DATABASE_URL'] = 'sqlite3::memory:'
   require 'apps/rails4'
-when '4.2'
+when '4.2', '5.1', '5.2'
   ENV['DATABASE_URL'] = 'sqlite3::memory:'
   require 'apps/rails4'
 else

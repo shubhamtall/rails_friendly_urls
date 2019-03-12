@@ -16,12 +16,16 @@ module ActionDispatch
         extras = environment[:extras] || {}
 
         begin
-          env = Rack::MockRequest.env_for(path, {:method => method})
+          env = Rack::MockRequest.env_for(path, {method: method})
         rescue URI::InvalidURIError => e
           raise ActionController::RoutingError, e.message
         end
 
-        req = @request_class.new(env)
+        req = request_class.new(env)
+        recognize_path_with_request(req, path, extras)
+      end
+
+      def recognize_path_with_request(req, path, extras, raise_on_missing: true)
         @router.recognize(req) do |route, _matches, params|
           params = _matches if params.nil?
           params.merge!(extras)
@@ -32,27 +36,38 @@ module ActionDispatch
               params[key] = URI.parser.unescape(value)
             end
           end
+          req.path_parameters = params
 
-          old_params = env[params_key]
-          env[params_key] = (old_params || {}).merge(params)
           dispatcher = route.app
-          while dispatcher.is_a?(Mapper::Constraints) && dispatcher.matches?(env) do
+
+          while dispatcher.is_a?(Mapper::Constraints) && dispatcher.matches?(req) do
             dispatcher = dispatcher.app
           end
 
           if dispatcher.is_a?(Dispatcher)
-            if dispatcher.controller(params, false)
-              dispatcher.prepare_params!(params)
-              return params
-            else
+            begin
+              if req.respond_to? ('controller_class')
+                req.controller_class
+              elsif dispatcher.controller(params, false)
+                dispatcher.prepare_params!(params)
+                return params
+              end
+            rescue NameError
               raise ActionController::RoutingError, "A route matches #{path.inspect}, but references missing controller: #{params[:controller].camelize}Controller"
             end
+
+            return req.path_parameters
           elsif dispatcher.is_a?(redirect_class)
             return { status: 301, path: path_from_dispatcher(dispatcher) }
+          elsif dispatcher.matches?(req) && dispatcher.engine?
+            path_parameters = dispatcher.rack_app.routes.recognize_path_with_request(req, path, extras, raise_on_missing: false)
+            return path_parameters if path_parameters
           end
         end
 
-        raise ActionController::RoutingError, "No route matches #{path.inspect}"
+        if raise_on_missing
+          raise ActionController::RoutingError, "No route matches #{path.inspect}"
+        end
       end
 
       private
@@ -94,4 +109,3 @@ module ActionDispatch
     end
   end
 end
-
