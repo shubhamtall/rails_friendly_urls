@@ -20,7 +20,7 @@ when '4.0'
 when '4.1'
   ENV['DATABASE_URL'] = 'sqlite3::memory:'
   require 'apps/rails4'
-when '4.2', '5.1', '5.2'
+when '4.2', '5.1', '5.2', '6.0'
   ENV['DATABASE_URL'] = 'sqlite3::memory:'
   require 'apps/rails4'
 else

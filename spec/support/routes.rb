@@ -1,11 +1,11 @@
-if Rails::VERSION::MAJOR == 4 || Rails::VERSION::MAJOR == 5
+if Rails::VERSION::MAJOR == 4 || Rails::VERSION::MAJOR == 5 || Rails::VERSION::MAJOR == 6
   require 'support/routes/rails4'
 else
   require 'support/routes/rails3'
 end
 
 def routes_file
-  if Rails::VERSION::MAJOR == 4 || Rails::VERSION::MAJOR == 5
+  if Rails::VERSION::MAJOR == 4 || Rails::VERSION::MAJOR == 5 || Rails::VERSION::MAJOR == 6
     'spec/support/routes/rails4.rb'
   else
     'spec/support/routes/rails3.rb'

@@ -19,12 +19,15 @@ Gem::Specification.new do |s|
 
   s.license = 'MIT'
 
-  s.required_ruby_version = '>= 1.9.3'
+  s.required_ruby_version = '>= 2.5.0'
 
-  s.add_dependency 'rails', '>= 4.0'
+  s.add_dependency 'rails', '>= 6.0'
 
-  s.add_development_dependency 'sqlite3', '~> 1.3.6'
+  s.add_development_dependency 'sqlite3', '~> 1.4'
   s.add_development_dependency 'rspec', '~> 3.2'
   s.add_development_dependency 'rspec-rails', '~> 3.0'
   s.add_development_dependency 'generator_spec', '~> 0.9'
+
+  # TODO: Remove the following line when sprockets v4.0.0 #643 is fixed
+  s.add_development_dependency 'sprockets', '~> 3.7.2'
 end
