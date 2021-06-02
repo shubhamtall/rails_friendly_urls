@@ -1,12 +1,12 @@
 # Configure Rails Environment
-require "codeclimate-test-reporter"
+require 'codeclimate-test-reporter'
 require 'simplecov'
 
 SimpleCov.start
 
 Bundler.setup
 
-ENV["RAILS_ENV"] = "test"
+ENV['RAILS_ENV'] = 'test'
 
 require 'rails'
 
@@ -20,11 +20,11 @@ when '4.0'
 when '4.1'
   ENV['DATABASE_URL'] = 'sqlite3::memory:'
   require 'apps/rails4'
-when '4.2', '5.1', '5.2', '6.0'
+when '4.2', '5.1', '5.2', '6.0', '6.1'
   ENV['DATABASE_URL'] = 'sqlite3::memory:'
   require 'apps/rails4'
 else
-  raise NotImplementedError.new "Rails Friendly URLs gem doesn't support Rails #{Rails.version}"
+  raise NotImplementedError, "Rails Friendly URLs gem doesn't support Rails #{Rails.version}"
 end
 
 Bundler.require :default
@@ -34,11 +34,11 @@ require 'rspec/rails'
 require 'rails_friendly_urls'
 
 # Load support files
-Dir["#{File.dirname(__FILE__)}/support/*.rb"].each { |f| require f }
+Dir["#{File.dirname(__FILE__)}/support/*.rb"].sort.each { |f| require f }
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  #config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  # config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false

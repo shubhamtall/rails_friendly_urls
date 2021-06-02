@@ -1,22 +1,25 @@
 module ActionDispatch
+
   module Routing
+
     #
     # Monkey Patched Rails' class ActionDispatch::Routing::RouteSet.
     #
     # @author Carlos Alonso
     #
     class RouteSet
+
       #
       # Monkey Patched Rails' method to recognize redirections as well as, for some
       # reason, the original Rails' method doesn't.
       #
       def recognize_path(path, environment = {})
-        method = (environment[:method] || "GET").to_s.upcase
+        method = (environment[:method] || 'GET').to_s.upcase
         path = Journey::Router::Utils.normalize_path(path) unless path =~ %r{://}
         extras = environment[:extras] || {}
 
         begin
-          env = Rack::MockRequest.env_for(path, {method: method})
+          env = Rack::MockRequest.env_for(path, method: method)
         rescue URI::InvalidURIError => e
           raise ActionController::RoutingError, e.message
         end
@@ -40,34 +43,32 @@ module ActionDispatch
 
           dispatcher = route.app
 
-          while dispatcher.is_a?(Mapper::Constraints) && dispatcher.matches?(req) do
-            dispatcher = dispatcher.app
-          end
+          dispatcher = dispatcher.app while dispatcher.is_a?(Mapper::Constraints) && dispatcher.matches?(req)
 
           if dispatcher.is_a?(Dispatcher)
             begin
-              if req.respond_to? ('controller_class')
+              if req.respond_to? 'controller_class'
                 req.controller_class
               elsif dispatcher.controller(params, false)
                 dispatcher.prepare_params!(params)
                 return params
               end
             rescue NameError
-              raise ActionController::RoutingError, "A route matches #{path.inspect}, but references missing controller: #{params[:controller].camelize}Controller"
+              raise ActionController::RoutingError,
+                "A route matches #{path.inspect}, but references missing controller: #{params[:controller].camelize}Controller"
             end
 
             return req.path_parameters
           elsif dispatcher.is_a?(redirect_class)
             return { status: 301, path: path_from_dispatcher(dispatcher) }
           elsif dispatcher.matches?(req) && dispatcher.engine?
-            path_parameters = dispatcher.rack_app.routes.recognize_path_with_request(req, path, extras, raise_on_missing: false)
+            path_parameters = dispatcher.rack_app.routes.recognize_path_with_request(req, path, extras,
+              raise_on_missing: false)
             return path_parameters if path_parameters
           end
         end
 
-        if raise_on_missing
-          raise ActionController::RoutingError, "No route matches #{path.inspect}"
-        end
+        raise ActionController::RoutingError, "No route matches #{path.inspect}" if raise_on_missing
       end
 
       private
@@ -78,9 +79,11 @@ module ActionDispatch
       # using this method here allows us to reuse this file for all Rails 4.x
       #
       def params_key
-        defined?(::ActionDispatch::Http::Parameters::PARAMETERS_KEY) ?
-          ::ActionDispatch::Http::Parameters::PARAMETERS_KEY :
-            ::ActionDispatch::Routing::RouteSet::PARAMETERS_KEY
+        if defined?(::ActionDispatch::Http::Parameters::PARAMETERS_KEY)
+          ::ActionDispatch::Http::Parameters::PARAMETERS_KEY
+        else
+          ::ActionDispatch::Routing::RouteSet::PARAMETERS_KEY
+        end
       end
 
       #
@@ -106,6 +109,9 @@ module ActionDispatch
           dispatcher.block
         end
       end
+
     end
+
   end
+
 end

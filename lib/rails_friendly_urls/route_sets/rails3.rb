@@ -1,11 +1,14 @@
 module ActionDispatch
+
   module Routing
+
     #
     # Monkey Patched Rails' class ActionDispatch::Routing::RouteSet.
     #
     # @author Carlos Alonso
     #
     class RouteSet
+
       #
       # Monkey Patched Rails' method: Includes a call to RailsFriendlyUrls::Manager.url_for
       # when the Rails' URL Helper is building a url for a path to use the
@@ -32,14 +35,18 @@ module ActionDispatch
 
         path = RailsFriendlyUrls::Manager.url_for path
 
-        ActionDispatch::Http::URL.url_for(options.merge!({
-          :path => path,
-          :params => params,
-          :user => user,
-          :password => password
-        }))
+        ActionDispatch::Http::URL.url_for(
+          options.merge!(
+            path: path,
+            params: params,
+            user: user,
+            password: password
+          )
+        )
       end
-    end
-  end
-end
 
+    end
+
+  end
+
+end

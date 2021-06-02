@@ -1,8 +1,7 @@
-
 require 'generators/rails_friendly_urls/install_generator'
 
 describe RailsFriendlyUrls::InstallGenerator, type: :generator do
-  destination File.expand_path("../../tmp", __FILE__)
+  destination File.expand_path('../tmp', __dir__)
 
   before do
     prepare_destination
@@ -16,9 +15,9 @@ describe RailsFriendlyUrls::InstallGenerator, type: :generator do
   end
 
   it 'creates the Rails Friendly Urls Manager' do
-    assert_file "config/initializers/friendly_urls_manager.rb", <<-EOS 
+    assert_file 'config/initializers/friendly_urls_manager.rb', <<-EOS
 # FriendlyUrls Manager contents
-class RailsFriendlyUrls::Manager 
+class RailsFriendlyUrls::Manager
   def self.urls
     raise NotImplementedError.new 'RailsFriendlyUrls::Manager::urls not implemented at config/initializers/friendly_urls_manager.rb'
   end
@@ -27,7 +26,6 @@ end
   end
 
   it 'injects the Rails Friendly Urls in routes' do
-    assert_file "config/routes.rb", routes_contents
+    assert_file 'config/routes.rb', routes_contents
   end
-
 end

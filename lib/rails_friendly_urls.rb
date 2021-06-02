@@ -23,12 +23,12 @@ require 'rails_friendly_urls/friendly_url'
 require 'rails_friendly_urls/route_sets/route_set'
 
 case RailsFriendlyUrls.rails_version
-when '4.2', '5.1', '5.2', '6.0'
+when '4.2', '5.1', '5.2', '6.0', '6.1'
   require 'rails_friendly_urls/urls/rails4_2'
 when '4.0', '4.1'
   require 'rails_friendly_urls/urls/rails4_0'
 when '3.2'
   require 'rails_friendly_urls/route_sets/rails3'
 else
-  raise NotImplementedError.new "Rails Friendly URLs gem doesn't support Rails #{Rails.version}"
+  raise NotImplementedError, "Rails Friendly URLs gem doesn't support Rails #{Rails.version}"
 end

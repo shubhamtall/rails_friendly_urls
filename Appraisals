@@ -1,3 +1,7 @@
+appraise 'rails6_1' do
+  gem 'rails', '~> 6.1'
+end
+
 appraise 'rails6' do
   gem 'rails', '~> 6.0'
 end
